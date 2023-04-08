@@ -25,6 +25,10 @@ class User extends Authenticatable
         'is_admin'
     ];
 
+    public function product()
+    {
+        return $this->belongsToMany(Product::class, "users_products");
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -12,6 +12,12 @@ class Product extends Model
         'name', 'image', 'description', 'slug'
     ];
 
+    public function user()
+    {
+        return $this->belongsToMany(User::class, "user_product");
+    }
+
+
     public function id(): string
     {
         return (string) $this->id;
