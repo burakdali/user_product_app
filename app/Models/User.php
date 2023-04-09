@@ -18,14 +18,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
         'phone_number',
         'is_admin'
     ];
 
-    public function product()
+    public function products()
     {
         return $this->belongsToMany(Product::class, "users_products");
     }
@@ -33,9 +34,13 @@ class User extends Authenticatable
     {
         return (string) $this->id;
     }
-    public function name(): string
+    public function first_name(): string
     {
-        return (string) $this->name;
+        return (string) $this->first_name;
+    }
+    public function last_name(): string
+    {
+        return (string) $this->last_name;
     }
     public function email(): string
     {

@@ -31,7 +31,7 @@ Route::get('/getUser/{id}', [UserController::class, 'show'])->name('users.show')
 Route::delete('/deleteUser/{id}', [UserController::class, 'destroy']);
 
 
-Route::get('/getUserProducts', [UserController::class, 'getUserProducts']);
+Route::post('/getUserProducts/{id}', [UserController::class, 'getUserProducts']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

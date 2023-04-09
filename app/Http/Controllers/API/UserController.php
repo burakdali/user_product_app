@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers\API;
 
+use Whoops\Run;
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductCollection;
+
 
 class UserController extends Controller
 {
@@ -31,13 +38,15 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => ['required', 'min:4'],
+            'first_name' => ['required', 'min:4'],
+            'last_name' => ['required', 'min:4'],
             'email' => ['sometimes', 'email'],
-            'phone_number' => ['sometimes'],
-            'password' => ['required', 'min:8'],
+            'phone_number' => ['sometimes', 'numeric'],
+            'password' => ['required', Rules\Password::defaults()],
         ]);
         $user = User::create([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'is_admin' => $request->is_admin,
@@ -67,13 +76,15 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $this->validate($request, [
-            'name' => ['sometimes', 'min:4', Rule::unique('users')->ignore($user->name(), 'name')],
+            'first_name' => ['sometimes', 'min:4', Rule::unique('users')->ignore($user->first_name(), 'first_name')],
+            'last_name' => ['sometimes', 'min:4', Rule::unique('users')->ignore($user->last_name(), 'last_name')],
             'email' => ['sometimes', 'email'],
             'phone_number' => ['sometimes'],
             'password' => ['sometimes', 'min:8', Rule::unique('users')->ignore($user->password(), 'password')],
         ]);
         $user->update([
-            'name' => $request->name ?? $user->name,
+            'first_name' => $request->first_name ?? $user->first_name,
+            'last_name' => $request->last_name ?? $user->last_name,
             'email' => $request->email ?? $user->email,
             'phone_number' => $request->phone_number ?? $user->phone_number,
             'is_admin' => $request->is_admin ?? $user->is_admin,
@@ -93,7 +104,14 @@ class UserController extends Controller
         $user->delete();
         return response()->json(null, 204);
     }
-    public function getUserProducts()
+    public function getUserProducts($id)
     {
+        $user = User::find($id);
+
+        if (!$user) {
+            return "this user is not exists";
+        }
+        $products = $user->products()->get();
+        return response()->json($products, 200);
     }
 }
