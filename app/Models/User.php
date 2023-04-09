@@ -29,6 +29,30 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Product::class, "users_products");
     }
+    public function id(): string
+    {
+        return (string) $this->id;
+    }
+    public function name(): string
+    {
+        return (string) $this->name;
+    }
+    public function email(): string
+    {
+        return (string) $this->email;
+    }
+    public function phoneNumber(): string
+    {
+        return (string) $this->phone_number;
+    }
+    public function isAdmin(): string
+    {
+        return (string) $this->is_admin;
+    }
+    public function password(): string
+    {
+        return (string) $this->password;
+    }
     /**
      * The attributes that should be hidden for serialization.
      *
