@@ -3,8 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UserTableSeeder extends Seeder
 {
@@ -21,7 +22,7 @@ class UserTableSeeder extends Seeder
             'email' => 'admin@admin.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'phone_number' => $this->faker->phoneNumber,
+            'phone_number' => fake()->phoneNumber,
             'is_admin' => 1,
             'remember_token' => Str::random(10),
         ]);
@@ -31,7 +32,7 @@ class UserTableSeeder extends Seeder
             'email' => 'user@demo.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'phone_number' => $this->faker->phoneNumber,
+            'phone_number' => fake()->phoneNumber,
             'is_admin' => 0,
             'remember_token' => Str::random(10),
         ]);
