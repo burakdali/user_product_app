@@ -11,14 +11,63 @@ use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\ProductResource;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\ProductCollection;
 
 
 class UserController extends Controller
 {
+
+    public function log_in(LoginRequest $request)
+    {
+        $request->authenticate();
+        $request->session()->regenerate();
+        $user = Auth::user();
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'token' => $user->createToken($user->first_name())->plainTextToken,
+                'name' => $user->first_name(),
+            ],
+            'message' => 'user logged in!.',
+        ]);
+    }
+    public function RegisterWithPhoneNumber(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone_number' => 'required|numeric|unique:users,phone_number',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'phone_number' => $request->phone_number,
+            'password' => Hash::make($request->password),
+        ]);
+        return response()->json($user, 200);
+    }
+    public function RegisterWithEmail(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'string|email|max:255|unique:' . User::class,
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+        return response()->json($user, 200);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -111,6 +160,12 @@ class UserController extends Controller
         if (!$user) {
             return "this user is not exists";
         }
+        $products = $user->products()->get();
+        return response()->json($products, 200);
+    }
+    public function getAuthenticatedUserProducts()
+    {
+        $user = Auth::user();
         $products = $user->products()->get();
         return response()->json($products, 200);
     }

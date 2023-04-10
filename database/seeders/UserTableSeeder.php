@@ -15,6 +15,26 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)->create();
+        User::create([
+            'first_name' => 'admin',
+            'last_name' => 'admin',
+            'email' => 'admin@admin.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'phone_number' => $this->faker->phoneNumber,
+            'is_admin' => 1,
+            'remember_token' => Str::random(10),
+        ]);
+        User::create([
+            'first_name' => 'user',
+            'last_name' => 'user',
+            'email' => 'user@demo.com',
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'phone_number' => $this->faker->phoneNumber,
+            'is_admin' => 0,
+            'remember_token' => Str::random(10),
+        ]);
+        User::factory(8)->create();
     }
 }
